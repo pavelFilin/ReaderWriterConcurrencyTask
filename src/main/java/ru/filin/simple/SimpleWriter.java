@@ -26,7 +26,9 @@ public class SimpleWriter extends Thread {
         while (true) {
             if (buffer.length()==0) {
                 synchronized (buffer) {
-                    write();
+                    if (buffer.length()==0) {
+                        write();
+                    }
                 }
             }
         }
