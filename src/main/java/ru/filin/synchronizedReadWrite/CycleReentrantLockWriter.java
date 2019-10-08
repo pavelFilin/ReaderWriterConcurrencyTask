@@ -1,11 +1,12 @@
-package ru.filin.reentrantLock.simple;
+package ru.filin.synchronizedReadWrite;
 
 
+import javax.management.OperationsException;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 
-public class ReentrantLockWriter extends Thread {
-    private final StringBuilder buffer;
+public class CycleReentrantLockWriter extends Thread {
+    private final CycleCollection buffer;
 
     private Lock locker;
     private Condition condition;
@@ -14,8 +15,9 @@ public class ReentrantLockWriter extends Thread {
     private int count;
     private int current;
 
+    private boolean finish;
 
-    public ReentrantLockWriter(String message, int count, StringBuilder buffer, Lock locker, Condition condition) {
+    public CycleReentrantLockWriter(String message, int count, CycleCollection buffer, Lock locker, Condition condition) {
         this.message = message;
         this.count = count;
         this.buffer = buffer;
@@ -24,24 +26,30 @@ public class ReentrantLockWriter extends Thread {
     }
 
     public void write() {
-        for (; current < count; current++) {
+
+        if (current < count) {
             System.out.println("Write " + Thread.currentThread().getName() + "red" + " " + message + current + " ");
-            buffer.append(message).append(count).append(" ");
+            try {
+                buffer.write(message + count + " ");
+            } catch (OperationsException e) {
+                e.printStackTrace();
+            }
+            current++;
+        } else {
+            isFinish();
         }
     }
 
     @Override
     public void run() {
-        while (true) {
+        while (!finish) {
             locker.lock();
             try {
-                while (buffer.length() != 0) {
+                while (buffer.isFull()) {
                     condition.await();
                 }
 
-                if (buffer.length() == 0) {
-                    write();
-                }
+                write();
 
                 condition.signalAll();
             } catch (InterruptedException e) {
@@ -50,5 +58,9 @@ public class ReentrantLockWriter extends Thread {
                 locker.unlock();
             }
         }
+    }
+
+    public void isFinish() {
+        this.finish = true;
     }
 }
