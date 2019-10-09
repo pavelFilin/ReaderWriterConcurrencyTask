@@ -30,11 +30,12 @@ public class CycleReentrantLockWriter extends Thread {
         if (current < count) {
             System.out.println("Write " + Thread.currentThread().getName() + "red" + " " + message + current + " ");
             try {
-                buffer.write(message + count + " ");
+                buffer.write(message + current + " ");
             } catch (OperationsException e) {
                 e.printStackTrace();
             }
             current++;
+            //                currentThread().wait(10L);
         } else {
             isFinish();
         }

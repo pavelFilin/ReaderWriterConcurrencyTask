@@ -1,7 +1,5 @@
 package ru.filin.synchronizedReadWrite;
 
-import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,40 +15,45 @@ public class CycleReentrantLockConcurrencyReaderWriter {
     private Lock lockerReader = new ReentrantLock();
     private Condition conditionReader = lockerReader.newCondition();
 
-    private Lock lockerWriter = new ReentrantLock();
-    private Condition conditionWriter = lockerWriter.newCondition();
+    private Lock lockerWriter = lockerReader;
+    private Condition conditionWriter = conditionReader;
+
+//    private Lock lockerWriter = new ReentrantLock();
+//    private Condition conditionWriter = lockerWriter.newCondition();
 
 
     public void test() throws Exception {
         List<CycleReentrantLockReader> cycleReentrantLockReaders = initReaders();
         List<CycleReentrantLockWriter> cycleReentrantLockWriters = initWriters();
 
-        for (CycleReentrantLockWriter cycleReentrantLockWriter : cycleReentrantLockWriters) {
-            cycleReentrantLockWriter.start();
-        }
-
         for (CycleReentrantLockReader cycleReentrantLockReader : cycleReentrantLockReaders) {
             cycleReentrantLockReader.start();
         }
 
         for (CycleReentrantLockWriter cycleReentrantLockWriter : cycleReentrantLockWriters) {
-            cycleReentrantLockWriter.join();
+            cycleReentrantLockWriter.start();
         }
 
-        for (CycleReentrantLockReader cycleReentrantLockReader : cycleReentrantLockReaders) {
-            cycleReentrantLockReader.join();
-        }
+
+//
+//        for (CycleReentrantLockWriter cycleReentrantLockWriter : cycleReentrantLockWriters) {
+//            cycleReentrantLockWriter.join();
+//        }
+//
+//        for (CycleReentrantLockReader cycleReentrantLockReader : cycleReentrantLockReaders) {
+//            cycleReentrantLockReader.join();
+//        }
 
     }
 
     private List<CycleReentrantLockWriter> initWriters() {
         List<CycleReentrantLockWriter> cycleReentrantLockWriters = new ArrayList<>();
 
-        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("aaaa", 3, buffer, lockerWriter, conditionWriter));
-        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("bbbb", 3, buffer, lockerWriter, conditionWriter));
-        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("cccc", 3, buffer, lockerWriter, conditionWriter));
-        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("dddd", 3, buffer, lockerWriter, conditionWriter));
-        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("eeee", 3, buffer, lockerWriter, conditionWriter));
+        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("aaaa", 5, buffer, lockerWriter, conditionWriter));
+        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("bbbb", 5, buffer, lockerWriter, conditionWriter));
+        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("cccc", 5, buffer, lockerWriter, conditionWriter));
+        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("dddd", 5, buffer, lockerWriter, conditionWriter));
+        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("eeee", 5, buffer, lockerWriter, conditionWriter));
         return cycleReentrantLockWriters;
     }
 

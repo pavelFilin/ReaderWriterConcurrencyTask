@@ -14,6 +14,8 @@ public class CycleCollection<T> {
     private int writePointer;
     private int readPointer;
 
+    private boolean fistCycle = true;
+
     public CycleCollection(Class<T> clazz, int capacity) {
         this.capacity = capacity;
         writePointer = -1;
@@ -34,12 +36,17 @@ public class CycleCollection<T> {
             throw new OperationsException();
         }
 
+//        System.out.println("rp = " + readPointer);
+
         readPointer++;
         if (readPointer == array.length) {
             readPointer = 0;
         }
 
-        return array[readPointer];
+        T result = array[readPointer];
+        array[readPointer] = null;
+
+        return result;
     }
 
     public void write(T obj) throws OperationsException {
@@ -47,12 +54,19 @@ public class CycleCollection<T> {
             throw new OperationsException();
         }
 
-        writePointer++;
-        if (writePointer == array.length) {
-            writePointer = 0;
-        }
+//        System.out.println("wp = " + writePointer);
+
+        pickNextNumber();
 
         array[writePointer] = obj;
+    }
+
+    private void pickNextNumber() {
+        writePointer++;
+        if (writePointer == array.length) {
+            fistCycle = false;
+            writePointer = 0;
+        }
     }
 
     public boolean isEmpty() {
@@ -60,8 +74,40 @@ public class CycleCollection<T> {
     }
 
     public boolean isFull() {
-        return readPointer == writePointer && writePointer != -1;
+//        System.out.println("is full " + ((readPointer == writePointer && writePointer != -1)));
+//        return fistCycle ? readPointer == writePointer && writePointer != -1 : isFullSp();
+        int temp = writePointer;
+        writePointer++;
+        if (writePointer == array.length) {
+            fistCycle = false;
+            writePointer = 0;
+        }
+
+        if (readPointer == -1) {
+            boolean b = fistCycle ? readPointer == writePointer : readPointer + 1 == writePointer;
+            writePointer = temp;
+            return b;
+        } else {
+            boolean b = readPointer == writePointer;
+            writePointer = temp;
+            return b;
+        }
     }
 
-
+//    private boolean isFullSp() {
+//        int temp = writePointer;
+//        writePointer++;
+//        if (writePointer == array.length) {
+//            fistCycle = false;
+//            writePointer = 0;
+//        }
+//
+//        if (readPointer == -1) {
+//            writePointer = temp;
+//            return readPointer + 1 == writePointer;
+//        } else {
+//            writePointer = temp;
+//            return readPointer == writePointer;
+//        }
+//    }
 }
