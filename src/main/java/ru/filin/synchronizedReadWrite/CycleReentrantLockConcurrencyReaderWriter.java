@@ -49,11 +49,11 @@ public class CycleReentrantLockConcurrencyReaderWriter {
     private List<CycleReentrantLockWriter> initWriters() {
         List<CycleReentrantLockWriter> cycleReentrantLockWriters = new ArrayList<>();
 
-        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("aaaa", 5, buffer, lockerWriter, conditionWriter));
-        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("bbbb", 5, buffer, lockerWriter, conditionWriter));
-        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("cccc", 5, buffer, lockerWriter, conditionWriter));
-        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("dddd", 5, buffer, lockerWriter, conditionWriter));
-        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("eeee", 5, buffer, lockerWriter, conditionWriter));
+        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("aaaa", 100, buffer, lockerWriter, conditionWriter));
+        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("bbbb", 100, buffer, lockerWriter, conditionWriter));
+        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("cccc", 100, buffer, lockerWriter, conditionWriter));
+        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("dddd", 100, buffer, lockerWriter, conditionWriter));
+        cycleReentrantLockWriters.add(new CycleReentrantLockWriter("eeee", 100, buffer, lockerWriter, conditionWriter));
         return cycleReentrantLockWriters;
     }
 

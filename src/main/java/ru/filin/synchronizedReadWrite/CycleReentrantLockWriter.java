@@ -23,6 +23,7 @@ public class CycleReentrantLockWriter extends Thread {
         this.buffer = buffer;
         this.locker = locker;
         this.condition = condition;
+        this.setPriority(MIN_PRIORITY);
     }
 
     public void write() {

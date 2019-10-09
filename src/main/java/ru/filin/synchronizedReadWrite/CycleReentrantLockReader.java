@@ -14,6 +14,7 @@ public class CycleReentrantLockReader extends Thread {
         this.buffer = buffer;
         this.locker = locker;
         this.condition = condition;
+        this.setPriority(MAX_PRIORITY);
     }
 
     public void read() {
